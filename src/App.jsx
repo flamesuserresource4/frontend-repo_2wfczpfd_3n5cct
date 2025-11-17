@@ -1,71 +1,89 @@
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import SEO from './components/SEO'
+import Footer from './components/Footer'
+
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_50%)]"></div>
-
-      <div className="relative min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-2xl w-full">
-          {/* Header with Flames icon */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center mb-6">
-              <img
-                src="/flame-icon.svg"
-                alt="Flames"
-                className="w-24 h-24 drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]"
-              />
-            </div>
-
-            <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
-              Flames Blue
-            </h1>
-
-            <p className="text-xl text-blue-200 mb-6">
-              Build applications through conversation
-            </p>
-          </div>
-
-          {/* Instructions */}
-          <div className="bg-slate-800/50 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8 shadow-xl mb-6">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                1
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Describe your idea</h3>
-                <p className="text-blue-200/80 text-sm">Use the chat panel on the left to tell the AI what you want to build</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                2
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Watch it build</h3>
-                <p className="text-blue-200/80 text-sm">Your app will appear in this preview as the AI generates the code</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center font-bold">
-                3
-              </div>
-              <div>
-                <h3 className="font-semibold text-white mb-1">Refine and iterate</h3>
-                <p className="text-blue-200/80 text-sm">Continue the conversation to add features and make changes</p>
-              </div>
+    <div className="min-h-screen bg-[#FAF9F6]">
+      <Navbar />
+      <main>
+        <Hero />
+        <SEO />
+        {/* Placeholder sections to reflect architecture: services teaser, testimonials, contact */}
+        <section id="services" className="bg-white text-[#36454F]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 className="text-3xl font-serif text-[#4A148C] font-semibold text-center">Core Love Work Services</h2>
+            <p className="mt-3 text-center text-[#36454F]/80 max-w-3xl mx-auto">Every case is unique. I offer compassionate guidance and tailored work such as reconciliation rituals, commitment alignment, and healing for communication.</p>
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: 'Bring Back Lost Lover', slug: 'bring-back-lost-lover-spell' },
+                { title: 'Get Your Ex Back', slug: 'get-your-ex-back-spell' },
+                { title: 'Binding Love Spell', slug: 'binding-love-spell' },
+                { title: 'Stop Divorce Spell', slug: 'stop-divorce-spell' },
+              ].map((s) => (
+                <a key={s.slug} href={`/services/${s.slug}`} className="group rounded-xl border border-[#4A148C]/10 bg-[#FAF9F6] p-5 hover:shadow-md transition">
+                  <div className="text-[#D4AF37] text-sm tracking-wider">Service</div>
+                  <div className="mt-1 font-semibold text-[#4A148C] group-hover:underline">{s.title}</div>
+                  <div className="mt-2 text-sm text-[#36454F]/80">Respectful, ethical, and grounded in traditional methods.</div>
+                </a>
+              ))}
             </div>
           </div>
+        </section>
 
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-sm text-blue-300/60">
-              No coding required • Just describe what you want
-            </p>
+        <section className="bg-[#FAF9F6] text-[#36454F]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <h2 className="text-3xl font-serif text-[#4A148C] font-semibold text-center">Words from Clients</h2>
+            <Testimonials />
           </div>
+        </section>
+
+        <section className="bg-white text-[#36454F]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+            <h2 className="text-3xl font-serif text-[#4A148C] font-semibold">Ready to talk?</h2>
+            <p className="mt-3">Tell me your story. I will listen without judgement and guide you with honesty.</p>
+            <a href="/contact" className="mt-6 inline-block rounded-full bg-[#4A148C] text-[#FAF9F6] px-6 py-3 font-semibold">Begin a Free Consultation</a>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
+function Testimonials() {
+  const [items, setItems] = React.useState([])
+  const [loaded, setLoaded] = React.useState(false)
+
+  React.useEffect(() => {
+    const load = async () => {
+      try {
+        const base = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
+        const res = await fetch(`${base}/api/testimonials?featured=true`)
+        const data = await res.json()
+        setItems(data)
+      } catch (e) {
+        setItems([])
+      } finally {
+        setLoaded(true)
+      }
+    }
+    load()
+  }, [])
+
+  return (
+    <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {(loaded && items.length === 0) && (
+        <div className="col-span-full text-center text-sm text-[#36454F]/70">Testimonials will appear here.</div>
+      )}
+      {items.map((t, i) => (
+        <div key={i} className="rounded-xl border border-[#4A148C]/10 bg-white p-5">
+          <div className="text-[#2D5016] text-xs">Verified Client</div>
+          <div className="mt-2 font-semibold text-[#4A148C]">{t.name}{t.location ? ` • ${t.location}` : ''}</div>
+          <p className="mt-2 text-sm text-[#36454F]/90">“{t.message}”</p>
         </div>
-      </div>
+      ))}
     </div>
   )
 }
